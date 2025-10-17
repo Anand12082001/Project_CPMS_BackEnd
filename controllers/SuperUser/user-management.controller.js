@@ -1,5 +1,7 @@
 const User = require("../../models/user.model");
-const bcrypt = require("bcrypt");
+// const bcrypt = require("bcrypt");
+const bcrypt = require("bcryptjs");
+
 
 // get management user
 const managementUsers = async (req, res) => {
