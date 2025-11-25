@@ -30,3 +30,17 @@ companySchema.pre('deleteOne', { document: true, query: false }, async function 
 
 
 module.exports = mongoose.model('Company', companySchema);
+// const mongoose = require('mongoose');
+
+// const companySchema = new mongoose.Schema({
+//   companyName: { type: String, required: true, unique: true },
+//   companyDescription: String,
+//   companyWebsite: String,
+//   companyLocation: String,
+//   companyDifficulty: String,
+//   // NEW: login fields
+//   email: { type: String, required: true, unique: true },
+//   password: { type: String, required: true },
+// }, { timestamps: true });
+
+// module.exports = mongoose.model('Company', companySchema);

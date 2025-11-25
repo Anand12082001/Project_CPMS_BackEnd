@@ -27,3 +27,4 @@ router.get('/company-data', CompanyDetail);
 
 
 module.exports = router;
+
