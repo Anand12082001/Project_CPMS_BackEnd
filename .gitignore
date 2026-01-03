@@ -1,1 +1,6 @@
-.env
+backend/*.env
+frontend/*.env
+backend/node_modules
+backend/Extra
+
+frontend/node_modules
