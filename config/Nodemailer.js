@@ -52,6 +52,9 @@ const sendMail = async (to, subject, html) => {
     console.error("❌ SendGrid SMTP error:", err);
     throw err;
   }
+  console.log("API KEY EXISTS:", !!process.env.SENDGRID_API_KEY);
+console.log("FROM EMAIL:", process.env.SENDGRID_FROM_EMAIL);
+
 };
 
 module.exports = sendMail;
