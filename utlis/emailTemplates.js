@@ -22,7 +22,7 @@ const emailTemplate = ({ role, name, email, password }) => {
           </div>
 
           <div style="text-align: center; margin: 30px 0;">
-            <a href="https://cpms-app-theta.vercel.app/" target="_blank"
+            <a href="https://sparkling-vacherin-edc492.netlify.app/" target="_blank"
                style="background-color: #004080; color: #ffffff; padding: 12px 24px; border-radius: 6px; text-decoration: none; font-weight: bold;">
               Log In to CPMS
             </a>
