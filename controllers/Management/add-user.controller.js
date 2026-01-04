@@ -67,6 +67,7 @@ const AddManagement = async (req, res) => {
 
 const AddStudent = async (req, res) => {
   const { email, first_name, number } = req.body;
+ console.log("🔥 ADD USER API HIT");
 
   try {
     if (await Users.findOne({ email }))
