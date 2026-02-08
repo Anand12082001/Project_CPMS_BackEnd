@@ -1,4 +1,5 @@
 const express = require('express');
+const fetch = require("node-fetch");
 
 // router after /user/
 const router = express.Router();
@@ -29,6 +30,21 @@ router.post('/upload-photo', upload.single('profileImgs'), UpdatePhoto);
 router.post('/update-profile', authenticateToken, UpdateProfile);
 
 router.post('/change-password', authenticateToken, UpdatePassword);
+// Resume view proxy (for TPO/Admin)
+router.get("/resume-view", async (req, res) => {
+  try {
+    const { url } = req.query;
+
+    const response = await fetch(url);
+    const buffer = await response.arrayBuffer();
+
+    res.setHeader("Content-Type", "application/pdf");
+    res.send(Buffer.from(buffer));
+  } catch (err) {
+    console.log(err);
+    res.status(500).send("Cannot open resume");
+  }
+});
 
 
 module.exports = router;

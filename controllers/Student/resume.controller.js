@@ -32,10 +32,18 @@ const UploadResume = async (req, res) => {
     const uniqueFilename = `${originalName}_${Date.now()}_${req.body.userId}`;
 
     // Upload the new resume
-    const cloudinaryResponse = await cloudinary.uploader.upload(req.file.path, {
-      folder: "CPMS/Resume",
-      public_id: uniqueFilename,
-    });
+    // const cloudinaryResponse = await cloudinary.uploader.upload(req.file.path, {
+    //   folder: "CPMS/Resume",
+    //   public_id: uniqueFilename,
+    // });
+const cloudinaryResponse = await cloudinary.uploader.upload(req.file.path, {
+  folder: "CPMS/Resume",
+  public_id: uniqueFilename,
+  resource_type: "auto",
+  type: "upload",          // ⭐ ensure public delivery
+  access_mode: "public"    // ⭐ critical for viewing in browser
+});
+
 
     // Update resume path in MongoDB
     user.studentProfile.resume = cloudinaryResponse.secure_url;

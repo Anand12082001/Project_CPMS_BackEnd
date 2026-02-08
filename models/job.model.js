@@ -24,7 +24,12 @@ const jobSchema = new mongoose.Schema({
       joiningDate: { type: Date },
       offerLetter: { type: String },
       status: { type: String, enum: ['applied', 'interview', 'hired', 'rejected'], default: 'applied' },
-      appliedAt: { type: Date, default: Date.now }
+      appliedAt: { type: Date, default: Date.now },
+      interviewMode: { type: String, enum: ["online", "offline"] },
+      interviewLink: {type:"String"},
+      interviewAddress: {type:"String"},
+      interviewTime: { type: Date },
+ 
     }
   ]
 });

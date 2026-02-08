@@ -94,6 +94,7 @@ const DeleteCompany = async (req, res) => {
 
 
 module.exports = {
+  
   AddCompany,
   UpdateCompany,
   CompanyDetail,

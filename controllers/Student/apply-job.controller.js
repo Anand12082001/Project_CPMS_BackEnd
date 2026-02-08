@@ -1,53 +1,93 @@
 const User = require("../../models/user.model");
-const jobSchema = require("../../models/job.model");
+const Job = require("../../models/job.model");
+const Application = require("../../models/application.model");
 
-
+/**
+ * Student applies for a job
+ */
 const AppliedToJob = async (req, res) => {
   try {
-    // console.log(req.params);
-    // if studentId is not defined return
-    if (req.params.studentId === "undefined") return;
-    if (req.params.jobId === "undefined") return;
+    const { jobId, studentId } = req.params;
 
-    const user = await User.findById(req.params.studentId);
-    const job = await jobSchema.findById(req.params.jobId);
+    if (!jobId || !studentId) {
+      return res.status(400).json({ msg: "Invalid request" });
+    }
 
-    // retune if already applied
-    if (user?.studentProfile?.appliedJobs?.some(job => job.jobId == req.params.jobId)) return res.json({ msg: "Already Applied!" });
+    const user = await User.findById(studentId);
+    const job = await Job.findById(jobId);
 
-    if (!user?.studentProfile?.resume) return res.json({ msg: 'Please Upload Resume First, Under "Placements" > "Placement Profile"' });
+    if (!user || !job) {
+      return res.status(404).json({ msg: "User or Job not found" });
+    }
 
-    user?.studentProfile?.appliedJobs?.push({ jobId: req.params.jobId, status: "applied" });
-    job?.applicants?.push({ studentId: user._id });
-    await user.save();
+    // 🔴 CHECK APPLICATION COLLECTION (NOT job.applicants)
+    const alreadyApplied = await Application.findOne({
+      job: jobId,
+      student: studentId,
+    });
+
+    if (alreadyApplied) {
+      return res.json({ msg: "Already Applied!" });
+    }
+
+    if (!user.studentProfile?.resume) {
+      return res.json({
+        msg: 'Please upload resume first (Placement Profile)',
+      });
+    }
+
+    // ✅ CREATE APPLICATION (THIS IS THE KEY)
+    const application = new Application({
+      job: jobId,
+      student: studentId,
+      appliedAt: new Date(),
+      finalStatus: "applied",
+    });
+
+    await application.save();
+
+    // ✅ OPTIONAL (for backward compatibility)
+    job.applicants.push({
+      studentId,
+      status: "applied",
+      appliedAt: new Date(),
+    });
+
+    user.studentProfile.appliedJobs.push({
+      jobId,
+      status: "applied",
+    });
+
     await job.save();
+    await user.save();
 
     return res.status(201).json({ msg: "Applied Successfully!" });
   } catch (error) {
-    console.log("apply-job.controller.js => ", error);
-    return res.status(500).json({ msg: "Internal Server Error!" });
+    console.log("AppliedToJob error =>", error);
+    res.status(500).json({ msg: "Internal Server Error" });
   }
-}
-
+};
+/**
+ * Check if student already applied for a job
+ */
 const CheckAlreadyApplied = async (req, res) => {
   try {
-    // if studentId is not defined return
-    if (req.params.studentId === "undefined") return;
-    if (req.params.jobId === "undefined") return;
+    const { studentId, jobId } = req.params;
 
-    const user = await User.findById(req.params.studentId);
+    const applied = await Application.findOne({
+      student: studentId,
+      job: jobId,
+    });
 
-    // retune if already applied
-    if (user?.studentProfile?.appliedJobs?.some(job => job.jobId == req.params.jobId)) return res.json({ applied: true });
-    else return res.json({ applied: false });
-
+    return res.json({ applied: !!applied });
   } catch (error) {
-    console.log("apply-job.controller.js => ", error);
-    return res.status(500).json({ msg: "Internal Server Error!" });
+    console.log(error);
+    return res.status(500).json({ applied: false });
   }
-}
+};
+
 
 module.exports = {
   AppliedToJob,
-  CheckAlreadyApplied
+  CheckAlreadyApplied,
 };

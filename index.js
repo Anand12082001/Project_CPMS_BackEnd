@@ -5,6 +5,23 @@ const path = require("path");
 const app = express();
 
 app.use(express.json());
+const fetch = require("node-fetch");
+
+app.get("/resume-view", async (req, res) => {
+  try {
+    const { url } = req.query;
+
+    const response = await fetch(url);
+    const buffer = await response.arrayBuffer();
+
+    res.setHeader("Content-Type", "application/pdf");
+    res.send(Buffer.from(buffer));
+  } catch (err) {
+    console.log(err);
+    res.status(500).send("Cannot open resume");
+  }
+});
+
 app.use(cors());
 
 // public folder for users profile
